@@ -2,6 +2,7 @@
 /work
 /output
 /__pycache__
+/certificates
 
 *.msixbundle
 *.msix
