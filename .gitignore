@@ -1,0 +1,8 @@
+/.venv
+/work
+/output
+/__pycache__
+
+*.msixbundle
+*.msix
+*.log
