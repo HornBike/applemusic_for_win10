@@ -33,7 +33,27 @@ function Ensure-AdministratorIfNeeded {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($identity)
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        throw 'Administrator rights are required when importing into LocalMachine stores.'
+        $argumentList = @(
+            '-ExecutionPolicy',
+            'Bypass',
+            '-File',
+            $PSCommandPath,
+            '-RootPath',
+            $RootPath,
+            '-Password',
+            $Password,
+            '-CertName',
+            $CertName,
+            '-Scope',
+            $StoreScope
+        )
+
+        if (-not [string]::IsNullOrWhiteSpace($CertificateDirectory)) {
+            $argumentList += @('-CertificateDirectory', $CertificateDirectory)
+        }
+
+        $process = Start-Process -FilePath powershell.exe -Verb RunAs -ArgumentList $argumentList -Wait -PassThru
+        exit $process.ExitCode
     }
 }
 
